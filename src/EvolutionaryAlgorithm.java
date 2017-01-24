@@ -12,8 +12,8 @@ public class EvolutionaryAlgorithm {
 
     public static PhysicsSystem phy = new PhysicsSystem();
     public static Wind wind = new Wind();
-    private static Point start = new Point(150, 20);
-    private static Point finish = new Point(150, 400);
+    private static Point start = new Point(100, 100);
+    private static Point finish = new Point(100, 700);
     private static int populationSize = 100;
     public JFrame f;
     public Gui panel = new Gui();
@@ -22,8 +22,9 @@ public class EvolutionaryAlgorithm {
 
     public void runAlgorithm() throws Exception {
 
-        wind.to = new Point(50, 100);
         wind.from = new Point(50, 10);
+        wind.to = new Point(50, 100);
+
         //	wind.setWindSpeed(4);
 
         wind.generateWindSpeed();
@@ -40,7 +41,7 @@ public class EvolutionaryAlgorithm {
         f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.getContentPane().add(panel);
-        f.setSize(1080, 720);
+        f.setSize(1600, 900);
         // Show the frame.
         f.setVisible(true);
 
