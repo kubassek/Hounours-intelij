@@ -45,42 +45,8 @@ public class EvolutionaryAlgorithm {
         f.setVisible(true);
 
         for (Solution s : population) {
-            this.showGui(s, wind);
-/*
-                System.out.println(s.getSolutionTime() + "\n" + "==================================================");
-                for(int i=0; i<s.getSolution().size()-1;i++) {
-
-                        double angleBetweenPoints = phy.getAngleFromPoint(s.getSolution().get(i), s.getSolution().get(i + 1));
-                        double boatWindAngle = angleBetweenPoints;
-
-                        if(boatWindAngle > 180){
-                            boatWindAngle = 360 - boatWindAngle;
-                        }
-                        System.out.print(boatWindAngle + " || ");
-
-
-                }
-*/
-
-            System.out.println((Math.atan2((wind.to.x - wind.from.x), (wind.to.y - wind.from.y)) * 180 / Math.PI));
-
-            for (int i = 0; i < s.getSolution().size() - 1; i++) {
-
-                double angleBetweenPoints = phy.getAngleFromPoint(s.getSolution().get(i), s.getSolution().get(i + 1));
-               // System.out.println("angle between points = " + (angleBetweenPoints));
-               // System.out.println("angleBetweenPoints - windAngle = " + (angleBetweenPoints-wind.getWindAngle()) + "\n\n");
-
-                double angle2 = (Math.atan2((s.getSolution().get(i + 1).x - s.getSolution().get(i).x), (s.getSolution().get(i + 1).y - s.getSolution().get(i).y)) * 180 / Math.PI);
-                System.out.println("secondPoint.x > firstPoint.x = " + angle2);
-                //System.out.println("angle - windAngle = " + (angle2 + wind.getWindAngle()) + "\n\n");
-                /*
-                double angle1 = (Math.atan2((s.getSolution().get(i).x - s.getSolution().get(i + 1).x), (s.getSolution().get(i).y - s.getSolution().get(i + 1).y)) * 180 / Math.PI);
-                System.out.println("secondPoint.x < firstPoint.x = " + angle1 + "\n\n");
-                System.out.println("angle - windAngle = " + (angle1 + wind.getWindAngle()));
-                */
-
-            }
-            Thread.sleep(100000000);
+            //this.showGui(s, wind);
+            //Thread.sleep(100000000);
         }
 
 
@@ -91,7 +57,7 @@ public class EvolutionaryAlgorithm {
             this.showGui(child, wind);
 
             //this.checkSolution(child);
-            if (this.calculateTime(child) < this.calculateTime(this.getWorstSol())) {
+            if (this.calculateTime(child) < this.calculateTime(this.getWorstSol()) && this.checkSolution(child)) {
                 System.out.println(this.calculateTime(child));
                 population.add(child);
 
@@ -192,21 +158,13 @@ public class EvolutionaryAlgorithm {
         boolean correct = true;
 
         for (int i = 0; i < solution.getSolution().size() - 1; i++) {
-            double angleBetweenPoints = 0;
-            double windAngle = wind.getWindAngle();
             double boatWindAngle = 0;
 
-
-            angleBetweenPoints = phy.getAngleFromPoint(solution.getSolution().get(i), solution.getSolution().get(i + 1));
-            boatWindAngle = angleBetweenPoints - windAngle;
+            boatWindAngle = phy.getBoatWindAngle(solution.getSolution().get(i), solution.getSolution().get(i + 1));
 
 
             if (boatWindAngle < 0) {
                 boatWindAngle = Math.abs(boatWindAngle);
-            }
-
-            if (boatWindAngle > 180) {
-                boatWindAngle = 360 - boatWindAngle;
             }
 
             if (boatWindAngle < 32) {
@@ -275,7 +233,7 @@ public class EvolutionaryAlgorithm {
             midpoint.y = y;
 
             int max = 14;
-            int min = 1;
+            int min = 3;
             int numberOfTurns = rand.nextInt((max - min) + 1) + min;
 
             path.addPoint(start);
