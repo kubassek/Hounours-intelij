@@ -10,11 +10,27 @@ import javax.swing.JFrame;
 
 public class EvolutionaryAlgorithm {
 
+
+    private Point point1 = new Point(100, 100);
+    private Point point2 = new Point(100, 700);
+    private Point point3 = new Point(700,700);
+    private Point point4 = new Point(1300,500);
+    private Point point5 = new Point(1300,100);
+    private Point point6 = new Point(500,100);
+
+    private Point start = new Point();
+    private Point finish = new Point();
+
+    private ArrayList<Point> pointsToFollow = new ArrayList<Point>();
+
+    private static int populationSize = 100;
+    private static int numberOfEvolutions = 20000;
+    private static int mutationChance = 20;
+    private static int maxNumberOfTurns = 14;
+    private static int minNumberOfTurns = 5;
+
     public static PhysicsSystem phy = new PhysicsSystem();
     public static Wind wind = new Wind();
-    private static Point start = new Point(100, 100);
-    private static Point finish = new Point(100, 700);
-    private static int populationSize = 100;
     public JFrame f;
     public Gui panel = new Gui();
     private Random rand = new Random();
@@ -22,54 +38,53 @@ public class EvolutionaryAlgorithm {
 
     public void runAlgorithm() throws Exception {
 
+        pointsToFollow.add(point1);
+        pointsToFollow.add(point2);
+        pointsToFollow.add(point3);
+        pointsToFollow.add(point4);
+        pointsToFollow.add(point5);
+        pointsToFollow.add(point6);
+
         wind.from = new Point(50, 10);
         wind.to = new Point(50, 100);
-
-        //	wind.setWindSpeed(4);
-
         wind.generateWindSpeed();
-        //	wind.generatePoints();
         wind.setWindAngle(phy.getAngleFromPoint(wind.from, wind.to));
 
-        //System.out.println("The wind angle is: " + wind.getWindAngle());
-        // System.out.println("The wind speed is: " + wind.getWindSpeed());
 
-        initialisePopulation();
-        // System.out.println(population.size());
-        // System.out.println(this.getBestSol().getSolution().size() + " Time: " + this.calculateTime((this.getBestSol())));
 
         f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.getContentPane().add(panel);
-        f.setSize(1600, 900);
-        // Show the frame.
+       // f.setSize(1600, 900);
+        f.setExtendedState(JFrame.MAXIMIZED_BOTH);
         f.setVisible(true);
 
-        for (Solution s : population) {
-            //this.showGui(s, wind);
-            //Thread.sleep(100000000);
-        }
+        for(int i=0; i<pointsToFollow.size()-1;i++) {
 
+            start = pointsToFollow.get(i);
+            finish = pointsToFollow.get(i+1);
 
-        for (int x = 0; x < 20000; x++) {
-            Solution parent1 = findParent();
-            Solution parent2 = findParent();
-            Solution child = crossOver(parent1, parent2);
-            this.showGui(child, wind);
+            population.clear();
+            initialisePopulation();
 
-            //this.checkSolution(child);
-            if (this.calculateTime(child) < this.calculateTime(this.getWorstSol()) && this.checkSolution(child)) {
-                System.out.println(this.calculateTime(child));
-                population.add(child);
-
-                //this.showGui(child,wind);
-                Thread.sleep(10);
-                population.remove(this.getWorstSol());
+            for (int x = 0; x < numberOfEvolutions; x++) {
+                panel.paintPoints(pointsToFollow);
+                Solution parent1 = findParent();
+                Solution parent2 = findParent();
+                Solution child = crossOver(parent1, parent2);
+                //this.checkSolution(child);
+                if (this.calculateTime(child) < this.calculateTime(this.getWorstSol()) && this.checkSolution(child)) {
+                    //System.out.println(this.calculateTime(child));
+                    population.add(child);
+                    this.showGui(child, wind, this.getBestSol(), false);
+                    //this.showGui(child,wind);
+                    Thread.sleep(10);
+                    population.remove(this.getWorstSol());
+                }
             }
+            this.showGui(this.getBestSol(), wind, this.getBestSol(), true);
         }
-        System.out.println("FINISHED :" + this.calculateTime(this.getBestSol()) + " VS " + this.calculateTime(this.getBestSol()));
-        this.showGui(this.getBestSol(), wind);
-        this.showGui(this.getBestSol(), wind);
+        System.out.println("FINISHED");
     }
 
     private Solution findParent() {
@@ -117,7 +132,7 @@ public class EvolutionaryAlgorithm {
     private Solution mutate(Solution sol) {
         Solution solution = sol;
 
-        int randMutation = rand.nextInt(20);
+        int randMutation = rand.nextInt(mutationChance);
         int randDirection = rand.nextInt(4);
         int randDistance = rand.nextInt(20);
 
@@ -233,8 +248,8 @@ public class EvolutionaryAlgorithm {
             midpoint.x = x;
             midpoint.y = y;
 
-            int max = 14;
-            int min = 3;
+            int max = maxNumberOfTurns;
+            int min = minNumberOfTurns;
             int numberOfTurns = rand.nextInt((max - min) + 1) + min;
 
             path.addPoint(start);
@@ -278,11 +293,9 @@ public class EvolutionaryAlgorithm {
         return soulutionTime;
     }
 
-    public void showGui(Solution solution, Wind wind) {
-
-        panel.repaintSolution(solution, wind);
+    public void showGui(Solution solution, Wind wind, Solution finished, boolean last) {
+        panel.repaintSolution(solution, wind, finished, last);
         panel.repaint();
-
     }
 
 }
