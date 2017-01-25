@@ -24,9 +24,9 @@ public class EvolutionaryAlgorithm {
     private ArrayList<Point> pointsToFollow = new ArrayList<Point>();
 
     private static int populationSize = 100;
-    private static int numberOfEvolutions = 20000;
+    private static int numberOfEvolutions = 15000;
     private static int mutationChance = 20;
-    private static int maxNumberOfTurns = 14;
+    private static int maxNumberOfTurns = 9;
     private static int minNumberOfTurns = 5;
 
     public static PhysicsSystem phy = new PhysicsSystem();
@@ -45,8 +45,8 @@ public class EvolutionaryAlgorithm {
         pointsToFollow.add(point5);
         pointsToFollow.add(point6);
 
-        wind.from = new Point(50, 10);
-        wind.to = new Point(50, 100);
+        wind.from = new Point(50, 100);
+        wind.to = new Point(50, 10);
         wind.generateWindSpeed();
         wind.setWindAngle(phy.getAngleFromPoint(wind.from, wind.to));
 
@@ -78,7 +78,7 @@ public class EvolutionaryAlgorithm {
                     population.add(child);
                     this.showGui(child, wind, this.getBestSol(), false);
                     //this.showGui(child,wind);
-                    Thread.sleep(10);
+                    //Thread.sleep(10);
                     population.remove(this.getWorstSol());
                 }
             }
